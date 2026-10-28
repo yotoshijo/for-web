@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="蜂窝纸板报价">
+  <rect width="512" height="512" rx="112" fill="#17324d"/>
+  <g fill="#e96b34">
+    <path d="M92 152h112l56 96-56 96H92l-56-96z"/>
+    <path d="M308 152h112l56 96-56 96H308l-56-96z"/>
+    <path d="M200 242h112l56 96-56 96H200l-56-96z"/>
+  </g>
+</svg>
+
