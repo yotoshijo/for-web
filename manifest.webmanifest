@@ -1,0 +1,20 @@
+{
+  "name": "蜂窝纸板智能报价",
+  "short_name": "纸板报价",
+  "description": "蜂窝纸板尺寸、厚度拼接与价格计算工具",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1e8",
+  "theme_color": "#17324d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
