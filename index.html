@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17324d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="纸板报价">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="蜂窝纸板尺寸、厚度拼接与五位小数价格计算工具">
+  <title>蜂窝纸板智能报价｜五位小数版</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="蜂窝纸板智能报价首页">
+      <span class="brand-mark" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+      <span>
+        <strong>蜂窝纸板智能报价</strong>
+        <small>160g · 边8 · 五位小数版</small>
+      </span>
+    </a>
+    <button class="button ghost no-print" id="printButton" type="button">
+      <span aria-hidden="true">⌁</span> 打印报价单
+    </button>
+  </header>
+
+  <aside class="ios-hint no-print" id="iosHint" hidden>
+    <strong>iPhone 使用提示</strong>
+    <span>在 Safari 中点“分享”，再选择“添加到主屏幕”，以后可像 App 一样打开。</span>
+  </aside>
+
+  <main class="page-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">QUOTATION CALCULATOR</p>
+        <h1>输入尺寸，立即算出拼接方案和价格</h1>
+        <p>系统优先使用较厚规格，并以最少层数拼接到客户要求的厚度。</p>
+      </div>
+      <div class="formula-card" aria-label="报价公式">
+        <span>报价公式</span>
+        <strong>面积 × 拼接单价 × 数量</strong>
+        <small>面积 = 长 × 宽（换算为平方米）</small>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="panel input-panel">
+        <div class="section-heading">
+          <div>
+            <span class="step">01</span>
+            <h2>录入订单</h2>
+          </div>
+          <span class="status-pill">自动计算</span>
+        </div>
+
+        <form id="quoteForm" novalidate>
+          <div class="field-grid">
+            <label class="field">
+              <span>长度 <em>mm</em></span>
+              <input id="length" name="length" type="number" min="1" step="1" value="800" inputmode="decimal" required>
+            </label>
+            <label class="field">
+              <span>宽度 <em>mm</em></span>
+              <input id="width" name="width" type="number" min="1" step="1" value="90" inputmode="decimal" required>
+            </label>
+            <label class="field wide">
+              <span>客户要求厚度 <em>mm</em></span>
+              <input id="thickness" name="thickness" type="number" min="1" max="5000" step="1" value="150" inputmode="numeric" required>
+              <small>例如 150 mm 将自动拼接为 80 + 70 mm</small>
+            </label>
+            <label class="field">
+              <span>数量 <em>件</em></span>
+              <input id="quantity" name="quantity" type="number" min="1" step="1" value="1" inputmode="numeric" required>
+            </label>
+          </div>
+          <p class="validation-message" id="validationMessage" role="alert" aria-live="polite"></p>
+        </form>
+
+        <div class="order-note no-print">
+          <span aria-hidden="true">i</span>
+          <p><strong>拼接规则</strong>先取最少层数；层数相同时，优先使用更厚的现有规格。</p>
+        </div>
+      </section>
+
+      <section class="panel result-panel" id="resultPanel" aria-live="polite">
+        <div class="section-heading">
+          <div>
+            <span class="step light">02</span>
+            <h2>报价结果</h2>
+          </div>
+          <span class="date" id="quoteDate"></span>
+        </div>
+
+        <div id="validResult">
+          <div class="result-label">总报价</div>
+          <div class="total-price"><span>¥</span><strong id="totalPrice">0.00</strong></div>
+          <p class="per-item">单件 <strong id="itemPrice">¥0.00</strong> · 共 <span id="quantityText">1</span> 件</p>
+
+          <div class="result-divider"></div>
+
+          <div class="result-block">
+            <span>厚度拼接方案</span>
+            <div class="layer-list" id="layerList"></div>
+            <p id="layerSummary"></p>
+          </div>
+
+          <dl class="metrics">
+            <div>
+              <dt>单件面积</dt>
+              <dd id="areaValue">0.0720 ㎡</dd>
+            </div>
+            <div>
+              <dt>拼接单价</dt>
+              <dd id="rateValue">¥26.30 /㎡</dd>
+            </div>
+          </dl>
+
+          <div class="calculation" id="calculationText"></div>
+        </div>
+
+        <div class="empty-result" id="emptyResult" hidden>
+          <div class="empty-icon" aria-hidden="true">!</div>
+          <h3>当前厚度无法精确拼接</h3>
+          <p id="suggestionText"></p>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel price-panel">
+      <div class="section-heading price-heading">
+        <div>
+          <span class="step">03</span>
+          <div>
+            <h2>厚度价格表</h2>
+            <p>参考图片录入，可按实际业务调整；修改后自动保存在本机浏览器。</p>
+          </div>
+        </div>
+        <button class="text-button no-print" id="resetPrices" type="button">恢复参考价格</button>
+      </div>
+      <div class="price-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>厚度</th>
+              <th>单价（元/㎡）</th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody"></tbody>
+        </table>
+      </div>
+      <p class="saved-notice no-print" id="savedNotice" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <span>蜂窝纸板智能报价工具</span>
+      <span>数据仅保存在当前设备</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
