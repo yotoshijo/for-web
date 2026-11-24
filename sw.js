@@ -1,17 +1,18 @@
-const CACHE_NAME = "honeycomb-quote-v3";
+const CACHE_NAME = "honeycomb-quote-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./experience.js",
-  "./motion.css",
-  "./manifest.webmanifest",
+  "./styles.css?v=3",
+  "./app.js?v=3",
+  "./experience.js?v=3",
+  "./motion.css?v=3",
+  "./manifest.webmanifest?v=3",
   "./icon.svg"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+  const requests = APP_SHELL.map((url) => new Request(url, { cache: "reload" }));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(requests)));
   self.skipWaiting();
 });
 
