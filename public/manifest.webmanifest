@@ -1,13 +1,13 @@
 {
-  "name": "蜂窝纸板内部计价",
-  "short_name": "纸板计价",
+  "name": "蜂窝纸板报价",
+  "short_name": "纸板报价",
   "description": "蜂窝纸板尺寸、厚度拼接与价格计算工具",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#10161c",
-  "theme_color": "#10161c",
+  "background_color": "#fbf8ef",
+  "theme_color": "#fbf8ef",
   "icons": [
     {
       "src": "icon.svg",

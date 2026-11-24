@@ -1,14 +1,9 @@
 services:
   - type: web
-    name: honeycomb-board-quote
-    runtime: static
-    buildCommand: echo "Static site ready"
-    staticPublishPath: .
-    headers:
-      - path: /sw.js
-        name: Cache-Control
-        value: no-cache
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-
+    name: honeycomb-board-customer-quote
+    runtime: node
+    plan: free
+    branch: customer-render
+    buildCommand: node --check render/server.mjs
+    startCommand: npm start
+    healthCheckPath: /healthz

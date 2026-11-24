@@ -1,0 +1,7 @@
+{
+  "name": "honeycomb-board-customer-quote",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "24.x" },
+  "scripts": { "start": "node render/server.mjs" }
+}
