@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-edition="internal">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,24 +9,37 @@
   <meta name="apple-mobile-web-app-title" content="纸板报价">
   <meta name="format-detection" content="telephone=no">
   <meta name="description" content="蜂窝纸板尺寸、厚度拼接与五位小数价格计算工具">
-  <title>蜂窝纸板智能报价｜五位小数版</title>
+  <title>蜂窝纸板内部计价｜蜂窝纸板</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="motion.css">
 </head>
 <body>
+  <dialog class="entry-splash no-print" id="entrySplash" aria-labelledby="splashTitle">
+    <div class="splash-content">
+      <div class="splash-honeycomb" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="splash-caption">
+        <span>成本核算</span>
+        <strong id="splashTitle">蜂窝纸板内部计价</strong>
+      </div>
+    </div>
+    <button type="button" class="splash-skip" id="skipSplash">跳过</button>
+  </dialog>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="蜂窝纸板智能报价首页">
+    <a class="brand" href="#" aria-label="蜂窝纸板内部计价首页">
       <span class="brand-mark" aria-hidden="true">
         <span></span><span></span><span></span>
       </span>
       <span>
-        <strong>蜂窝纸板智能报价</strong>
-        <small>160g · 边8 · 五位小数版</small>
+        <strong>蜂窝纸板内部计价</strong>
+        <small>160g · 边8 · 内部使用</small>
       </span>
     </a>
     <button class="button ghost no-print" id="printButton" type="button">
-      <span aria-hidden="true">⌁</span> 打印报价单
+      <span aria-hidden="true">⌁</span> 打印计价单
     </button>
   </header>
 
@@ -53,7 +66,7 @@
       <section class="panel input-panel">
         <div class="section-heading">
           <div>
-            <span class="step">01</span>
+
             <h2>录入订单</h2>
           </div>
           <span class="status-pill">自动计算</span>
@@ -91,14 +104,14 @@
       <section class="panel result-panel" id="resultPanel" aria-live="polite">
         <div class="section-heading">
           <div>
-            <span class="step light">02</span>
-            <h2>报价结果</h2>
+
+            <h2>成本结果</h2>
           </div>
           <span class="date" id="quoteDate"></span>
         </div>
 
         <div id="validResult">
-          <div class="result-label">总报价</div>
+          <div class="result-label">总成本</div>
           <div class="total-price"><span>¥</span><strong id="totalPrice">0.00</strong></div>
           <p class="per-item">单件 <strong id="itemPrice">¥0.00</strong> · 共 <span id="quantityText">1</span> 件</p>
 
@@ -135,7 +148,7 @@
     <section class="panel price-panel">
       <div class="section-heading price-heading">
         <div>
-          <span class="step">03</span>
+
           <div>
             <h2>厚度价格表</h2>
             <p>参考图片录入，可按实际业务调整；修改后自动保存在本机浏览器。</p>
@@ -158,12 +171,13 @@
     </section>
 
     <footer>
-      <span>蜂窝纸板智能报价工具</span>
+      <span>蜂窝纸板内部计价工具</span>
       <span>数据仅保存在当前设备</span>
     </footer>
   </main>
 
-  <script src="app.js"></script>
+  <script src="experience.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
 

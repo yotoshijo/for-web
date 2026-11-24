@@ -1,0 +1,93 @@
+html[data-edition="internal"] { --splash-bg: #0b2337; --splash-ink: #f7e9d7; --splash-accent: #eda56e; }
+html[data-edition="customer"] { --splash-bg: #162e2b; --splash-ink: #fff3dc; --splash-accent: #f0b878; }
+
+.entry-splash[open] {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  overflow: hidden;
+  border: 0;
+  color: var(--splash-ink);
+  background: radial-gradient(ellipse at 50% 43%, #ffffff13, transparent 60%), var(--splash-bg);
+}
+.entry-splash::backdrop { background: var(--splash-bg); }
+.entry-splash.is-leaving { animation: splash-out .24s ease both; }
+.entry-splash.is-leaving::backdrop { animation: splash-fade .24s ease both; }
+.splash-content { display: grid; justify-items: center; gap: clamp(24px, 6vw, 48px); text-align: center; }
+.splash-honeycomb { position: relative; width: 172px; height: 157px; filter: drop-shadow(0 11px 18px #0005); }
+.splash-honeycomb i {
+  --cell-x: 0px;
+  --cell-y: 0px;
+  --cell-delay: 0ms;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 58px;
+  height: 64px;
+  margin: -32px 0 0 -29px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--splash-accent), #a55732);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  animation: splash-cell .62s cubic-bezier(.25,.78,.26,1) var(--cell-delay) both;
+}
+.splash-honeycomb i::after {
+  content: "";
+  width: 48px;
+  height: 54px;
+  clip-path: inherit;
+  background: repeating-linear-gradient(37deg, #c8834440 0 1px, transparent 1px 4px), var(--splash-bg);
+}
+.splash-honeycomb i:nth-child(2) { --cell-x: 62px; --cell-delay: 85ms; }
+.splash-honeycomb i:nth-child(3) { --cell-x: 31px; --cell-y: 51px; --cell-delay: 160ms; }
+.splash-honeycomb i:nth-child(4) { --cell-x: -31px; --cell-y: 51px; --cell-delay: 235ms; }
+.splash-honeycomb i:nth-child(5) { --cell-x: -62px; --cell-delay: 310ms; }
+.splash-honeycomb i:nth-child(6) { --cell-x: -31px; --cell-y: -51px; --cell-delay: 385ms; }
+.splash-honeycomb i:nth-child(7) { --cell-x: 31px; --cell-y: -51px; --cell-delay: 460ms; }
+.splash-caption { display: grid; gap: 9px; animation: page-in .56s .18s ease both; }
+.splash-caption span { color: var(--splash-accent); font-size: .88rem; letter-spacing: .23em; }
+.splash-caption strong { font-size: clamp(1.55rem, 5vw, 2.7rem); font-weight: 750; letter-spacing: .07em; }
+.splash-skip {
+  position: absolute;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #ffffff45;
+  border-radius: 30px;
+  background: #ffffff0f;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.splash-skip:focus-visible { outline: 2px solid var(--splash-accent); outline-offset: 3px; }
+.page-entered .intro { animation: page-in .42s ease both; }
+.page-entered .workspace { animation: page-in .46s .05s ease both; }
+.button, .text-button { transition: background-color .18s, color .18s, box-shadow .18s, transform .18s; }
+.button:active:not(:disabled), .text-button:active:not(:disabled) { transform: translateY(1px); }
+.button:disabled { cursor: not-allowed; opacity: .55; }
+.field > span { transition: color .18s; }
+.field:focus-within > span { color: var(--orange); }
+.price-table-wrap tr { transition: background-color .18s; }
+.price-table-wrap tbody tr:hover { background-color: #edb9861a; }
+.layer-chip { animation: page-in .23s ease both; }
+
+@keyframes splash-cell {
+  from { opacity: 0; transform: translate(calc(var(--cell-x) * 1.42), calc(var(--cell-y) * 1.42)) scale(.5) rotate(-17deg); }
+  to { opacity: 1; transform: translate(var(--cell-x), var(--cell-y)) scale(1); }
+}
+@keyframes splash-out { to { opacity: 0; transform: scale(1.03); } }
+@keyframes splash-fade { to { opacity: 0; } }
+@keyframes page-in { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce), print {
+  .entry-splash, .page-entered .intro, .page-entered .workspace, .layer-chip { animation: none !important; }
+  .button, .text-button, .field > span, .field input, .price-table-wrap tr { transition: none; }
+}

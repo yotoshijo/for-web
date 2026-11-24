@@ -159,7 +159,12 @@ function calculate() {
   const itemPrice = area * combinedRate;
   const totalPrice = itemPrice * quantity;
 
-  $("#totalPrice").textContent = money(totalPrice);
+  const totalText = money(totalPrice);
+  const total = $("#totalPrice");
+  if (total.textContent !== totalText) {
+    total.textContent = totalText;
+    window.quoteMotion?.result(total);
+  }
   $("#itemPrice").textContent = `¥${money(itemPrice)}`;
   $("#quantityText").textContent = quantity.toLocaleString("zh-CN");
   $("#areaValue").textContent = `${area.toFixed(5)} ㎡`;
