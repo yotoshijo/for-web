@@ -1,4 +1,4 @@
-const CACHE_NAME = "honeycomb-quote-v2";
+const CACHE_NAME = "honeycomb-quote-v3";
 const APP_SHELL = [
   "./",
   "./index.html",

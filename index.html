@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#17324d">
+  <meta name="theme-color" content="#10161c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="纸板报价">
+  <meta name="apple-mobile-web-app-title" content="纸板计价">
   <meta name="format-detection" content="telephone=no">
   <meta name="description" content="蜂窝纸板尺寸、厚度拼接与五位小数价格计算工具">
-  <title>蜂窝纸板内部计价｜蜂窝纸板</title>
+  <title>蜂窝纸板内部计价</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -18,11 +18,10 @@
 <body>
   <dialog class="entry-splash no-print" id="entrySplash" aria-labelledby="splashTitle">
     <div class="splash-content">
-      <div class="splash-honeycomb" aria-hidden="true">
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <div class="splash-drawing" aria-hidden="true">
+        <div class="splash-sheets"><i></i><i></i><i></i></div>
       </div>
       <div class="splash-caption">
-        <span>成本核算</span>
         <strong id="splashTitle">蜂窝纸板内部计价</strong>
       </div>
     </div>
@@ -39,7 +38,7 @@
       </span>
     </a>
     <button class="button ghost no-print" id="printButton" type="button">
-      <span aria-hidden="true">⌁</span> 打印计价单
+      打印计价单
     </button>
   </header>
 
@@ -50,26 +49,24 @@
 
   <main class="page-shell">
     <section class="intro">
-      <div>
-        <p class="eyebrow">QUOTATION CALCULATOR</p>
-        <h1>输入尺寸，立即算出拼接方案和价格</h1>
-        <p>系统优先使用较厚规格，并以最少层数拼接到客户要求的厚度。</p>
+      <div class="intro-copy">
+        <h1>成本核算工作台</h1>
+        <p>录入尺寸与数量，核算用料、拼接与整单成本。</p>
       </div>
-      <div class="formula-card" aria-label="报价公式">
-        <span>报价公式</span>
-        <strong>面积 × 拼接单价 × 数量</strong>
-        <small>面积 = 长 × 宽（换算为平方米）</small>
+      <div class="intro-side">
+        <div class="formula-card" aria-label="计价公式">
+          <span>计价公式</span>
+          <strong>面积 × 拼接单价 × 数量</strong>
+        </div>
+        <div class="intro-drawing" aria-hidden="true"><i></i><i></i><i></i></div>
       </div>
     </section>
 
     <div class="workspace">
       <section class="panel input-panel">
         <div class="section-heading">
-          <div>
-
-            <h2>录入订单</h2>
-          </div>
-          <span class="status-pill">自动计算</span>
+          <h2>录入订单</h2>
+          <a class="table-link no-print" href="#costTable">查看成本表</a>
         </div>
 
         <form id="quoteForm" novalidate>
@@ -85,7 +82,6 @@
             <label class="field wide">
               <span>客户要求厚度 <em>mm</em></span>
               <input id="thickness" name="thickness" type="number" min="1" max="5000" step="1" value="150" inputmode="numeric" required>
-              <small>例如 150 mm 将自动拼接为 80 + 70 mm</small>
             </label>
             <label class="field">
               <span>数量 <em>件</em></span>
@@ -95,18 +91,12 @@
           <p class="validation-message" id="validationMessage" role="alert" aria-live="polite"></p>
         </form>
 
-        <div class="order-note no-print">
-          <span aria-hidden="true">i</span>
-          <p><strong>拼接规则</strong>先取最少层数；层数相同时，优先使用更厚的现有规格。</p>
-        </div>
+        <p class="order-note no-print"><strong>拼接规则</strong>先取最少层数，层数相同时优先选较厚规格。</p>
       </section>
 
       <section class="panel result-panel" id="resultPanel" aria-live="polite">
         <div class="section-heading">
-          <div>
-
-            <h2>成本结果</h2>
-          </div>
+          <h2>成本结果</h2>
           <span class="date" id="quoteDate"></span>
         </div>
 
@@ -145,14 +135,11 @@
       </section>
     </div>
 
-    <section class="panel price-panel">
+    <section class="panel price-panel" id="costTable">
       <div class="section-heading price-heading">
         <div>
-
-          <div>
-            <h2>厚度价格表</h2>
-            <p>参考图片录入，可按实际业务调整；修改后自动保存在本机浏览器。</p>
-          </div>
+          <h2>厚度成本表</h2>
+          <p>修改单价后自动保存到当前浏览器。</p>
         </div>
         <button class="text-button no-print" id="resetPrices" type="button">恢复参考价格</button>
       </div>

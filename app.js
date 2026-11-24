@@ -12,6 +12,7 @@ const $ = (selector) => document.querySelector(selector);
 const inputs = [$("#length"), $("#width"), $("#thickness"), $("#quantity")];
 let prices = loadPrices();
 let saveTimer;
+let noticeTimer;
 
 function loadPrices() {
   try {
@@ -48,6 +49,7 @@ function renderPriceTable() {
       const value = Number(input.value);
       if (Number.isFinite(value) && value >= 0) {
         prices[input.dataset.thickness] = value;
+        window.quoteMotion?.price(input);
         scheduleSave();
         calculate();
       }
@@ -59,10 +61,16 @@ function scheduleSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prices));
-    const notice = $("#savedNotice");
-    notice.textContent = "价格已保存到本机";
-    setTimeout(() => { notice.textContent = ""; }, 1800);
+    showNotice("价格已保存到本机");
   }, 250);
+}
+
+function showNotice(message) {
+  const notice = $("#savedNotice");
+  clearTimeout(noticeTimer);
+  notice.textContent = message;
+  window.quoteMotion?.saved(notice);
+  noticeTimer = setTimeout(() => { notice.textContent = ""; }, 1800);
 }
 
 function isBetterCombination(candidate, current) {
@@ -172,7 +180,20 @@ function calculate() {
   $("#layerSummary").textContent = `共 ${combination.length} 层，合计 ${target} mm`;
 
   const layerList = $("#layerList");
-  layerList.innerHTML = "";
+  const signature = combination.map((thickness) => thickness + ":" + prices[thickness]).join(",");
+  if (layerList.dataset.signature !== signature) {
+    layerList.dataset.signature = signature;
+    renderLayers(layerList, combination);
+  }
+
+  const rateFormula = combination.map((thickness) => Number(prices[thickness]).toFixed(5)).join(" + ");
+  $("#calculationText").innerHTML = `
+    ${compactNumber(length)}÷1000 × ${compactNumber(width)}÷1000 = ${area.toFixed(5)} ㎡<br>
+    ${area.toFixed(5)} × (${rateFormula}) × ${quantity} = ¥${money(totalPrice)}`;
+}
+
+function renderLayers(layerList, combination) {
+  layerList.replaceChildren();
   combination.forEach((thickness, index) => {
     if (index > 0) {
       const plus = document.createElement("span");
@@ -186,23 +207,20 @@ function calculate() {
     layerList.appendChild(chip);
   });
 
-  const rateFormula = combination.map((thickness) => Number(prices[thickness]).toFixed(5)).join(" + ");
-  $("#calculationText").innerHTML = `
-    ${compactNumber(length)}÷1000 × ${compactNumber(width)}÷1000 = ${area.toFixed(5)} ㎡<br>
-    ${area.toFixed(5)} × (${rateFormula}) × ${quantity} = ¥${money(totalPrice)}`;
 }
 
 inputs.forEach((input) => input.addEventListener("input", calculate));
+$("#quoteForm").addEventListener("submit", (event) => event.preventDefault());
 
 $("#printButton").addEventListener("click", () => window.print());
 
 $("#resetPrices").addEventListener("click", () => {
+  clearTimeout(saveTimer);
   prices = { ...DEFAULT_PRICES };
   localStorage.removeItem(STORAGE_KEY);
   renderPriceTable();
   calculate();
-  $("#savedNotice").textContent = "已恢复图片中的参考价格";
-  setTimeout(() => { $("#savedNotice").textContent = ""; }, 1800);
+  showNotice("已恢复参考价格");
 });
 
 $("#quoteDate").textContent = new Intl.DateTimeFormat("zh-CN", {
