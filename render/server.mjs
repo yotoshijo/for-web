@@ -21,6 +21,7 @@ const apiMethods = new Map([
   ["/api/quote", new Set(["POST"])],
   ["/api/admin/session", new Set(["GET"])],
   ["/api/admin/markup", new Set(["GET", "PUT"])],
+  ["/api/admin/markup/preview", new Set(["POST"])],
   ["/api/admin/login", new Set(["POST"])],
   ["/api/admin/logout", new Set(["POST"])],
   ["/api/admin/setup", new Set(["POST"])]

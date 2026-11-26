@@ -6,6 +6,10 @@ const dialog = $("#adminDialog");
 const adminForm = $("#adminForm");
 const markupForm = $("#markupForm");
 const markupInput = $("#markupAmount");
+const markupMode = $("#markupMode");
+const markupPreview = $("#markupPreview");
+const anchorInputs = Object.fromEntries([20, 70, 92].map(thickness => [thickness, $("#markup" + thickness)]));
+const modeLabels = { fixed: "固定加价", size: "按尺寸加价" };
 const adminStatus = $("#adminStatus");
 const setupFromLink = new URLSearchParams(location.hash.slice(1)).get("setup");
 if (setupFromLink) history.replaceState(null, "", location.pathname + location.search);
@@ -31,6 +35,7 @@ async function api(path, options = {}) {
   if (!response.ok || !result) {
     const error = new Error(result?.message || "服务暂时不可用，请稍后重试。");
     error.status = response.status;
+    error.code = result?.code;
     throw error;
   }
   return result;
@@ -113,7 +118,9 @@ function requestQuote(delay = 180) {
       if (!controller.signal.aborted) renderQuote(quote, order);
     } catch (error) {
       if (!controller.signal.aborted) {
-        showQuoteMessage(error.status === 422 ? "当前厚度无法精确拼接" : "暂时无法报价", error.message);
+        const title = error.code === "manual_quote" ? "需人工核价"
+          : error.status === 422 ? "当前厚度无法精确拼接" : "暂时无法报价";
+        showQuoteMessage(title, error.message);
       }
     } finally {
       if (quoteRequest === controller) quoteRequest = null;
@@ -128,9 +135,10 @@ function setAdminStatus(message = "", error = false) {
 
 function setAdminBusy(busy) {
   adminBusy = busy;
-  for (const id of ["#adminSubmit", "#saveMarkup", "#closeAdmin", "#exitAdmin"]) {
+  for (const id of ["#adminSubmit", "#saveMarkup", "#previewMarkup", "#closeAdmin", "#exitAdmin"]) {
     $(id).disabled = busy;
   }
+  for (const input of [markupInput, markupMode, ...Object.values(anchorInputs)]) input.disabled = busy;
 }
 
 function configureLogin(configured) {
@@ -138,6 +146,7 @@ function configureLogin(configured) {
   setupMode = !configured;
   adminForm.reset();
   markupForm.reset();
+  markupPreview.hidden = true;
   adminForm.hidden = false;
   markupForm.hidden = true;
   $("#setupField").hidden = configured;
@@ -154,8 +163,20 @@ function configureLogin(configured) {
 function applyMarkup(markup) {
   markupRevision = markup.revision;
   markupInput.value = String(markup.amount);
+  markupMode.value = markup.mode;
+  for (const [thickness, input] of Object.entries(anchorInputs)) input.value = String(markup.anchors[thickness]);
+  $("#activeMarkupMode").textContent = "当前生效：" + modeLabels[markup.mode];
+  markupPreview.hidden = true;
   adminForm.hidden = true;
   markupForm.hidden = false;
+}
+
+function markupDraft() {
+  return {
+    mode: markupMode.value,
+    amount: markupInput.valueAsNumber,
+    anchors: Object.fromEntries(Object.entries(anchorInputs).map(([thickness, input]) => [thickness, input.valueAsNumber]))
+  };
 }
 
 async function openAdmin() {
@@ -169,7 +190,7 @@ async function openAdmin() {
     if (session.admin) applyMarkup(await api("admin/markup"));
     else configureLogin(session.configured);
     dialog.showModal();
-    if (adminActive) markupInput.focus();
+    if (adminActive) markupMode.focus();
     else (setupMode && !setupFromLink ? $("#setupToken") : $("#adminPassword")).focus();
   } catch (error) {
     $("#adminNotice").textContent = error.message;
@@ -191,8 +212,39 @@ adminForm.addEventListener("submit", async (event) => {
     const markup = await api("admin/markup");
     adminForm.reset();
     applyMarkup(markup);
-    markupInput.focus();
   } catch (error) {
+    setAdminStatus(error.message, true);
+  } finally {
+    setAdminBusy(false);
+    if (!markupForm.hidden) markupMode.focus();
+  }
+});
+
+markupForm.addEventListener("input", () => {
+  markupPreview.hidden = true;
+  setAdminStatus();
+});
+
+$("#previewMarkup").addEventListener("click", async () => {
+  if (adminBusy || !adminActive || !markupForm.reportValidity()) return;
+  const order = readOrder();
+  if (!order) {
+    setAdminStatus("请先返回报价页填写有效的长、宽、厚和数量。", true);
+    return;
+  }
+  setAdminBusy(true);
+  setAdminStatus();
+  markupPreview.hidden = true;
+  try {
+    const result = await api("admin/markup/preview", { method: "POST", body: { order, pricing: markupDraft() } });
+    $("#previewSpec").textContent = `${order.length} × ${order.width} × ${order.thickness} mm · ${order.quantity.toLocaleString("zh-CN")} 件`;
+    for (const [target, data] of [["#previewFixed", result.fixed], ["#previewSize", result.size]]) {
+      $(target).textContent = data.message || `总价 ¥${data.total} · 加价 ${data.amount.toFixed(5)} 元/件`;
+    }
+    markupPreview.hidden = false;
+    markupPreview.scrollIntoView({ block: "nearest" });
+  } catch (error) {
+    if (error.status === 401) configureLogin(true);
     setAdminStatus(error.message, true);
   } finally {
     setAdminBusy(false);
@@ -207,16 +259,16 @@ markupForm.addEventListener("submit", async (event) => {
   try {
     applyMarkup(await api("admin/markup", {
       method: "PUT",
-      body: { amount: markupInput.valueAsNumber, revision: markupRevision }
+      body: { ...markupDraft(), revision: markupRevision }
     }));
-    setAdminStatus("加价已保存。");
+    setAdminStatus("已保存客户报价设置。");
     requestQuote(0);
   } catch (error) {
     let message = error.message;
     if (error.status === 409) {
       try {
         applyMarkup(await api("admin/markup"));
-        message = "加价已被更新。请核对当前金额后再保存。";
+        message = "计价设置已被更新。请核对最新设置后再保存。";
       } catch (refreshError) {
         if (refreshError.status === 401) configureLogin(true);
         message = refreshError.message;
@@ -241,6 +293,7 @@ dialog.addEventListener("close", async () => {
   adminForm.reset();
   markupForm.reset();
   markupForm.hidden = true;
+  markupPreview.hidden = true;
   setAdminStatus();
   if (!adminActive) return;
   adminActive = false;

@@ -13,7 +13,7 @@
   <link rel="manifest" href="manifest.webmanifest?v=3">
   <link rel="icon" href="icon.svg?v=2" type="image/svg+xml">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-customer.png">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
   <link rel="stylesheet" href="motion.css?v=3">
 </head>
 <body>
@@ -140,19 +140,47 @@
     </form>
     <form id="markupForm" hidden>
       <label class="field">
-        <span>每件固定加价 <em>元/件</em></span>
-        <input id="markupAmount" type="number" min="0" max="1000000" step="0.00001" inputmode="decimal" aria-describedby="markupHelp" required>
+        <span>客户报价模式</span>
+        <select id="markupMode" aria-describedby="activeMarkupMode markupHelp">
+          <option value="fixed">固定加价</option>
+          <option value="size">按尺寸加价</option>
+        </select>
       </label>
-      <p class="markup-help" id="markupHelp">保存后应用于后续报价。</p>
+      <p class="markup-help" id="activeMarkupMode"></p>
+      <label class="field">
+        <span>每件固定加价 <em>元/件</em></span>
+        <input id="markupAmount" type="number" min="0" max="1000000" step="0.00001" inputmode="decimal" required>
+      </label>
+      <fieldset class="markup-anchors">
+        <legend>按尺寸的基准加价 <em>元/件</em></legend>
+        <p class="markup-help" id="anchorHelp">以 0.06 m² 的普通矩形整板为基准，按实际面积调整。异形件请人工核价。</p>
+        <div class="markup-anchor-grid">
+          <label class="field"><span>20 mm</span>
+            <input id="markup20" type="number" min="0" max="1000000" step="0.00001" inputmode="decimal" aria-describedby="anchorHelp" required></label>
+          <label class="field"><span>70 mm</span>
+            <input id="markup70" type="number" min="0" max="1000000" step="0.00001" inputmode="decimal" aria-describedby="anchorHelp" required></label>
+          <label class="field"><span>92 mm</span>
+            <input id="markup92" type="number" min="0" max="1000000" step="0.00001" inputmode="decimal" aria-describedby="anchorHelp" required></label>
+        </div>
+      </fieldset>
+      <p class="markup-help" id="markupHelp">可以先试算，保存设置后才会更新客户报价。</p>
       <div class="dialog-actions">
-        <button class="text-button" id="exitAdmin" type="button">关闭并退出</button>
-        <button class="button primary" id="saveMarkup" type="submit">保存加价</button>
+        <button class="text-button" id="exitAdmin" type="button" aria-label="关闭并退出管理员模式">退出</button>
+        <button class="button ghost" id="previewMarkup" type="button">试算当前规格</button>
+        <button class="button primary" id="saveMarkup" type="submit">保存设置</button>
       </div>
+      <section class="markup-preview" id="markupPreview" aria-live="polite" aria-label="报价试算结果" hidden>
+        <p class="markup-help" id="previewSpec"></p>
+        <dl>
+          <div><dt>固定加价</dt><dd id="previewFixed"></dd></div>
+          <div><dt>按尺寸加价</dt><dd id="previewSize"></dd></div>
+        </dl>
+      </section>
     </form>
     <p class="admin-status" id="adminStatus" role="status"></p>
   </dialog>
   <script src="experience.js" defer></script>
-  <script src="app.js?v=3" defer></script>
+  <script src="app.js?v=4" defer></script>
 </body>
 </html>
 
