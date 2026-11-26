@@ -1,9 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="蜂窝纸板报价">
-  <rect width="512" height="512" rx="112" fill="#17324d"/>
-  <g fill="#e96b34">
-    <path d="M92 152h112l56 96-56 96H92l-56-96z"/>
-    <path d="M308 152h112l56 96-56 96H308l-56-96z"/>
-    <path d="M200 242h112l56 96-56 96H200l-56-96z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180" role="img" aria-label="深蓝纸板叠层，内部计价">
+  <defs>
+    <linearGradient id="background" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#1c344a"/>
+      <stop offset="1" stop-color="#101b28"/>
+    </linearGradient>
+    <pattern id="grid" width="15" height="15" patternUnits="userSpaceOnUse">
+      <path d="M15 0H0V15" fill="none" stroke="#8fb4c4" stroke-opacity=".18"/>
+    </pattern>
+  </defs>
+  <rect width="180" height="180" fill="url(#background)"/>
+  <rect width="180" height="180" fill="url(#grid)"/>
+  <g stroke="#e7aa72" stroke-width="3.5" stroke-linejoin="round">
+    <path d="M34 106l62-25 50 22-62 28z" fill="#32434d"/>
+    <path d="M34 91l62-25 50 22-62 28z" fill="#344954"/>
+    <path d="M34 76l62-25 50 22-62 28z" fill="#416372" stroke="#ffca8b"/>
   </g>
+  <path d="M50 77l46-19 31 14M74 89l46-20" fill="none" stroke="#bce9e1" stroke-width="2.5" stroke-linecap="round" opacity=".85"/>
+  <path d="M38 143h26m53-105h25" fill="none" stroke="#87c9cc" stroke-width="2" stroke-linecap="round"/>
 </svg>
 

@@ -10,10 +10,15 @@
   "theme_color": "#10161c",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "icon.svg?v=2",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon-internal.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }

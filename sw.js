@@ -1,4 +1,4 @@
-const CACHE_NAME = "honeycomb-quote-v4";
+const CACHE_NAME = "honeycomb-quote-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,8 +6,9 @@ const APP_SHELL = [
   "./app.js?v=3",
   "./experience.js?v=3",
   "./motion.css?v=3",
-  "./manifest.webmanifest?v=3",
-  "./icon.svg"
+  "./manifest.webmanifest?v=4",
+  "./icon.svg?v=2",
+  "./apple-touch-icon-internal.png"
 ];
 
 self.addEventListener("install", (event) => {
