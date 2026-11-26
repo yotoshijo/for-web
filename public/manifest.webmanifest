@@ -1,7 +1,7 @@
 {
   "name": "蜂窝纸板报价",
   "short_name": "纸板报价",
-  "description": "蜂窝纸板尺寸、厚度拼接与价格计算工具",
+  "description": "按尺寸和数量查询蜂窝纸板成品总价",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",
@@ -10,10 +10,15 @@
   "theme_color": "#fbf8ef",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "icon.svg?v=2",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon-customer.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }

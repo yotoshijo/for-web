@@ -70,7 +70,6 @@ html[data-edition="customer"] { --splash-bg: #203c2f; --splash-ink: #fff3d8; --s
 .page-entered .workspace { animation: page-in .46s .05s ease both; }
 .page-entered .material-cells { animation: material-reveal .6s ease both; }
 .admin-dialog[open] { animation: page-in .24s ease both; }
-.calculation[open] > div { animation: page-in .23s ease both; }
 .layer-chip { animation: page-in .23s ease both; }
 
 @keyframes splash-cell {

@@ -8,12 +8,13 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="纸板报价">
   <meta name="format-detection" content="telephone=no">
-  <meta name="description" content="蜂窝纸板尺寸、厚度拼接与五位小数价格计算工具">
+  <meta name="description" content="按尺寸和数量查询蜂窝纸板成品总价">
   <title>蜂窝纸板在线报价</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="motion.css">
+  <link rel="manifest" href="manifest.webmanifest?v=3">
+  <link rel="icon" href="icon.svg?v=2" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-customer.png">
+  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="motion.css?v=3">
 </head>
 <body>
   <dialog class="entry-splash no-print" id="entrySplash" aria-labelledby="splashTitle">
@@ -50,7 +51,7 @@
     <section class="intro">
       <div class="intro-copy">
         <h1>蜂窝纸板<br>在线报价</h1>
-        <p>输入尺寸和数量，查看拼接方案、单件价与总价。</p>
+        <p>输入尺寸和数量，查看拼接方案与成品总价。</p>
       </div>
       <div class="hero-material" aria-hidden="true">
         <div class="material-cells">
@@ -97,9 +98,9 @@
 
         <div id="validResult" hidden>
           <div class="quote-amount">
-            <div class="result-label">参考总价</div>
-            <div class="total-price"><span>¥</span><strong id="totalPrice">0.00</strong></div>
-            <p class="per-item">单件 <strong id="itemPrice">¥0.00</strong> · 共 <span id="quantityText">1</span> 件</p>
+            <div class="result-label">成品总价</div>
+            <div class="total-price"><span>¥</span><strong id="totalPrice"></strong></div>
+            <p class="result-quantity">共 <span id="quantityText"></span> 件</p>
           </div>
           <div class="result-detail">
             <div class="result-block">
@@ -107,80 +108,51 @@
               <div class="layer-list" id="layerList"></div>
               <p id="layerSummary"></p>
             </div>
-            <dl class="metrics">
-              <div>
-                <dt>单件面积</dt>
-                <dd id="areaValue">0.0720 ㎡</dd>
-              </div>
-              <div>
-                <dt>拼接单价</dt>
-                <dd id="rateValue">¥26.30 /㎡</dd>
-              </div>
-            </dl>
-            <details class="calculation">
-              <summary>查看计算过程</summary>
-              <div id="calculationText"></div>
-            </details>
           </div>
         </div>
 
         <div class="empty-result" id="emptyResult">
-          <div class="empty-icon" aria-hidden="true">!</div>
-          <h3 id="resultMessage">正在读取报价表</h3>
+          <h3 id="resultMessage">正在计算报价</h3>
           <p id="suggestionText"></p>
         </div>
       </section>
     </div>
 
-    <section class="panel price-panel">
-      <div class="section-heading price-heading">
-        <div>
-          <h2>厚度价格表</h2>
-          <p>单位为元/㎡。</p>
-        </div>
-        <div class="price-actions no-print">
-          <button class="text-button" id="adminButton" type="button" aria-haspopup="dialog">管理员模式</button>
-          <button class="text-button" id="cancelPrices" type="button" hidden>取消编辑</button>
-          <button class="button primary" id="savePrices" type="button" hidden>发布价格</button>
-        </div>
-      </div>
-      <div class="price-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>厚度</th>
-              <th>单价（元/㎡）</th>
-            </tr>
-          </thead>
-          <tbody id="priceTableBody"><tr><td colspan="2">正在读取价表…</td></tr></tbody>
-        </table>
-      </div>
-      <p class="saved-notice no-print" id="savedNotice" aria-live="polite"></p>
-    </section>
-
     <footer>
-      <span>蜂窝纸板报价工具</span>
       <span>页面价格供参考，实际报价以双方确认为准。</span>
+      <button class="text-button" id="adminButton" type="button" aria-haspopup="dialog">管理员模式</button>
+      <p id="adminNotice" role="status"></p>
     </footer>
   </main>
 
   <dialog class="admin-dialog no-print" id="adminDialog" aria-labelledby="adminTitle">
+    <h2 id="adminTitle">管理员模式</h2>
     <form id="adminForm">
-      <h2 id="adminTitle">管理员模式</h2>
-      <p id="adminHelp">请输入管理员密码后编辑报价表。</p>
+      <p id="adminHelp">请输入管理员密码。</p>
       <label class="field" id="setupField" hidden><span>初始化密钥</span>
         <input id="setupToken" type="password" autocomplete="off" maxlength="128"></label>
       <label class="field"><span id="adminPasswordLabel">管理员密码</span>
         <input id="adminPassword" type="password" autocomplete="current-password" required maxlength="128"></label>
-      <p class="admin-error" id="adminError" role="alert"></p>
       <div class="dialog-actions">
         <button class="text-button" id="closeAdmin" type="button">取消</button>
         <button class="button primary" id="adminSubmit" type="submit">进入</button>
       </div>
     </form>
+    <form id="markupForm" hidden>
+      <label class="field">
+        <span>每件固定加价 <em>元/件</em></span>
+        <input id="markupAmount" type="number" min="0" max="1000000" step="0.00001" inputmode="decimal" aria-describedby="markupHelp" required>
+      </label>
+      <p class="markup-help" id="markupHelp">保存后应用于后续报价。</p>
+      <div class="dialog-actions">
+        <button class="text-button" id="exitAdmin" type="button">关闭并退出</button>
+        <button class="button primary" id="saveMarkup" type="submit">保存加价</button>
+      </div>
+    </form>
+    <p class="admin-status" id="adminStatus" role="status"></p>
   </dialog>
   <script src="experience.js" defer></script>
-  <script src="app.js" defer></script>
+  <script src="app.js?v=3" defer></script>
 </body>
 </html>
 

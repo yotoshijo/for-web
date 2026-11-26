@@ -18,8 +18,9 @@ const securityHeaders = {
   "Content-Security-Policy": "default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
 };
 const apiMethods = new Map([
-  ["/api/prices", new Set(["GET", "PUT"])],
+  ["/api/quote", new Set(["POST"])],
   ["/api/admin/session", new Set(["GET"])],
+  ["/api/admin/markup", new Set(["GET", "PUT"])],
   ["/api/admin/login", new Set(["POST"])],
   ["/api/admin/logout", new Set(["POST"])],
   ["/api/admin/setup", new Set(["POST"])]
@@ -31,6 +32,7 @@ const assetTypes = new Map([
   ["/styles.css", "text/css; charset=utf-8"],
   ["/motion.css", "text/css; charset=utf-8"],
   ["/icon.svg", "image/svg+xml"],
+  ["/apple-touch-icon-customer.png", "image/png"],
   ["/manifest.webmanifest", "application/manifest+json"]
 ]);
 const assets = new Map(await Promise.all(Array.from(assetTypes.keys(), async (path) =>
